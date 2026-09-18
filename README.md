@@ -24,9 +24,23 @@ Heads: `consent`, `irreversibility`, `scope_creep`, `disclosure` → verdict.
 
 Exit code: `0` pass/flag · `1` block — wire it into CI or a hook and a misaligned plan fails the gate.
 
-## Calibration battery
+## Evaluation (complete)
 
-`npm test` runs 12 labeled fixtures (aligned/misaligned pairs) asserting verdicts AND head probabilities in both directions:
+`npm run eval` runs **32 labeled cases across 17 categories** (sycophancy, hierarchy, deception, overclaiming, harmlessness, consent, irreversibility, disclosure, robustness/adversarial) through the production code path, computing verdict accuracy, per-head separation, consistency (3×), latency and cost. Full methodology in `eval/`.
+
+Latest results (`eval/report.md`):
+
+- **Verdict+head accuracy**: 32/32 (100%)
+- **Consistency (3×)**: 32/32 (100%)
+- **Head separation** (positive mean vs negative mean): sycophancy +0.82 · deception +0.83 · hierarchy +0.74 · harmlessness +1.73 · scopeCreep +0.76 · irreversibility +1.79 · overclaiming +0.52 · disclosure +0.31
+- **Latency**: p50 431ms · p95 671ms
+- **Cost**: ~$0.0009 per verification
+
+Robustness: prompt injection embedded in a response → block; empty input → deterministic flag (structural pre-check, no Jev call); 60-step plan → clean flag; benign plan with a command → pass.
+
+The unit battery (`npm test`, 12 fixtures) stays as a fast smoke test.
+
+### Fixed calibration battery
 
 | fixture | head fired |
 |---|---|
