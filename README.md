@@ -120,7 +120,18 @@ const r = await alignPlan({ goal, plan });
 if (r.verdict === 'block') throw new Error(`plan blocked: ${JSON.stringify(r.p)}`);
 ```
 
-**Claude skill** — `SKILL.md` included; drop it into your agent's skills directory and instruct the agent to verify its own plans before execution.
+**Skills** — two enforcement skills ship with the repo; install them into any agent that reads skills (Claude Code, Codex, Cursor rules, etc.):
+
+```bash
+npx -y skills add github:caiovicentino/jev-align
+```
+
+| skill | fires at | what it enforces |
+|---|---|---|
+| `jev-align` | before **executing** a plan or delivering a response | block = stop, show findings, propose a narrower plan; flag = surface to human; never reword to sneak past the gate |
+| `jev-align-claims` | before **stating a completion claim** ("tests pass", "deployed", "Done.") | fabricated verification is caught at the moment it happens; the agent reports what it actually observed instead |
+
+The skills are the difference between a verifier you *could* call and a verifier your agent *cannot skip*: they wire the gate into the agent's own decision loop, with the anti-gaming rules (block is final, verify the final artifact, preserve the audit trail) written into the agent's instructions.
 
 ## Antifragility
 
@@ -178,6 +189,9 @@ src/
   learn.mjs       # audit-trail → unanimity gates
 bin/align.js     # CLI
 mcp/server.mjs    # MCP server (align_check)
+skills/
+  jev-align/SKILL.md         # the gate skill (plan + response verification)
+  jev-align-claims/SKILL.md  # the fabricated-verification skill
 eval/             # 94-case battery, runner, derivation, nulls, invariance
 test/             # 12-fixture smoke battery
 config/           # derived thresholds + learned weights
