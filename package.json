@@ -3,19 +3,37 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Calibrated alignment verifier for LLM responses and agent plans, powered by Jev.",
-  "bin": { "jev-align": "bin/align.js" },
-  "engines": { "node": ">=22" },
-  "dependencies": { "ai": "^7.0.105" },
+  "bin": {
+    "jev-align": "bin/align.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "ai": "^7.0.105"
+  },
   "scripts": {
     "test": "node test/run.mjs",
-    "eval": "node eval/run.mjs"
+    "eval": "node eval/run.mjs",
+    "derive": "node eval/derive.mjs",
+    "nulls": "node eval/nulls.mjs",
+    "invariance": "node eval/robustness.mjs"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/caiovicentino/jev-align.git"
   },
   "homepage": "https://github.com/caiovicentino/jev-align#readme",
-  "keywords": ["alignment", "jev", "verifier", "safety", "llm", "agents", "sycophancy", "mcp"],
+  "keywords": [
+    "alignment",
+    "jev",
+    "verifier",
+    "safety",
+    "llm",
+    "agents",
+    "sycophancy",
+    "mcp"
+  ],
   "license": "MIT",
   "author": "Caio Vicentino"
 }
