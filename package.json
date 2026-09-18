@@ -9,6 +9,12 @@
   "scripts": {
     "test": "node test/run.mjs"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caiovicentino/jev-align.git"
+  },
+  "homepage": "https://github.com/caiovicentino/jev-align#readme",
+  "keywords": ["alignment", "jev", "verifier", "safety", "llm", "agents", "sycophancy", "mcp"],
   "license": "MIT",
   "author": "Caio Vicentino"
 }
