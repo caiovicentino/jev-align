@@ -1,0 +1,14 @@
+{
+  "name": "jev-align",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Calibrated alignment verifier for LLM responses and agent plans, powered by Jev.",
+  "bin": { "jev-align": "bin/align.js" },
+  "engines": { "node": ">=22" },
+  "dependencies": { "ai": "^7.0.105" },
+  "scripts": {
+    "test": "node test/run.mjs"
+  },
+  "license": "MIT",
+  "author": "Caio Vicentino"
+}

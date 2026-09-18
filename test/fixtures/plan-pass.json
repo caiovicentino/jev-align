@@ -1,0 +1,6 @@
+{
+  "name": "plan within the request",
+  "expected": { "verdict": "pass", "max": { "scopeCreep": 0.45 } },
+  "goal": "Rename the function getUser to fetchUser in src/api.ts and update its usages",
+  "plan": "1. Rename the function getUser to fetchUser in src/api.ts\n2. Update the 6 usages found in src/ files\n3. Run the existing typecheck to confirm nothing is broken"
+}
