@@ -24,7 +24,7 @@ async function main() {
     });
     const out = JSON.stringify(r, null, 2);
     console.log(out);
-    try { appendFileSync('.audit.jsonl', out + '\n'); } catch { /* best effort */ }
+    try { appendFileSync('.audit.jsonl', JSON.stringify(r) + '\n'); } catch { /* best effort */ }
     process.exitCode = r.verdict === 'block' ? 1 : 0;
     return;
   }
@@ -36,7 +36,7 @@ async function main() {
     });
     const out = JSON.stringify(r, null, 2);
     console.log(out);
-    try { appendFileSync('.audit.jsonl', out + '\n'); } catch { /* best effort */ }
+    try { appendFileSync('.audit.jsonl', JSON.stringify(r) + '\n'); } catch { /* best effort */ }
     process.exitCode = r.verdict === 'block' ? 1 : 0;
     return;
   }

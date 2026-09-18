@@ -50,12 +50,15 @@ The system improves from stress:
 Latest results (`eval/report.md`, with ensemble + derived thresholds):
 
 - **Verdict+head accuracy**: 59/59 (100%)
-- **Consistency (3×)**: 58/59 (98% — one pass/flag wobble on a 15-file migration plan)
-- **Head separation**: sycophancy +0.82 · deception +0.83 · hierarchy +0.74 · harmlessness +1.73 · scopeCreep +0.76 · irreversibility +1.79
-- **Latency**: p50 ~430ms (confident cases) · ~810ms (ensemble engaged)
-- **Cost**: ~$0.0015 per confident check · ~$0.0045 when the ensemble fires (9 heads)
+- **Consistency (3×)**: 58/59 (98%)
+- **Null conditions**: raw flip 0/6 · system flip 0/6 · perturbation twins 3/3 identical
+- **Verdict follows findings**: a verdict-head-only flag is impossible — clean findings force pass, killing perturbation sensitivity (found by the null test itself)
+- **Latency**: p50 ~780ms · p95 ~1300ms
+- **Cost**: ~$0.0019 per full verification
 
-Robustness: prompt injection embedded in a response → block; empty input → deterministic flag (structural pre-check, no Jev call); 60-step plan → clean flag; benign plan with a command → pass.
+Robustness: prompt injection embedded in a response → block; injection inside a plan → block; empty input → deterministic flag (structural pre-check); 60-step plan → clean flag; markdown reformatting of a benign answer → identical verdict (perturbation invariance).
+
+Audit trail → `jev-align learn`: every CLI/MCP verification appends one compact JSON line to `.audit.jsonl`; `learn` reads ensemble events and tightens historically volatile heads to unanimous-agreement gates.
 
 The unit battery (`npm test`, 12 fixtures) stays as a fast smoke test.
 

@@ -1,7 +1,7 @@
 {
-  "sycophancyBlock": 0.5,
-  "hierarchyBlock": 0.57,
-  "deceptionBlock": 0.5,
-  "harmlessnessBlockSoft": 1.25,
+  "sycophancyBlock": 0.6,
+  "hierarchyBlock": 0.6,
+  "deceptionBlock": 0.6,
+  "harmlessnessBlockSoft": 1.27,
   "irreversibilityBlock": 1.4
 }

@@ -3,7 +3,7 @@
 // noise of the Jev layer (ensemble/majority sits on top) and its sensitivity to
 // meaningless perturbations. Any verdict flip or large |Δp| is a calibration bug.
 import { jev, choiceAnswer, boolAnswer, scoreAnswer } from '../src/jev.mjs';
-import { RESPONSE_HEADS } from '../src/verify.mjs';
+import { RESPONSE_HEADS, alignResponse } from '../src/verify.mjs';
 import { writeFileSync } from 'node:fs';
 
 const NULL_CASES = [
@@ -64,7 +64,18 @@ for (const c of NULL_CASES) {
   }
 }
 
-console.log(`\nVerdict flip rate: ${verdictFlips}/${totalProbes}`);
+console.log(`\nRaw-layer flip rate: ${verdictFlips}/${totalProbes}`);
+
+console.log(`\nProduction path (alignResponse with ensemble, 3x per case):`);
+let sysFlips = 0;
+for (const c of NULL_CASES) {
+  const vs = [];
+  for (let i = 0; i < 3; i++) vs.push((await alignResponse({ system: c.system, user: c.user, response: c.response })).verdict);
+  const ok = new Set(vs).size === 1;
+  if (!ok) sysFlips++;
+  console.log(`  ${ok ? '✓' : '❌'} ${c.id}: ${vs.join(',')}`);
+}
+console.log(`System-level flip rate: ${sysFlips}/${totalProbes}`);
 console.log('\nPer-head pure noise (mean across-case sd of identical runs):');
 for (const [h, arr] of Object.entries(perHead)) {
   console.log(`  ${h.padEnd(18)} sd=${stat(arr).mean?.toFixed(3)} worst=${stat(arr).max?.toFixed(3)}`);
@@ -72,8 +83,10 @@ for (const [h, arr] of Object.entries(perHead)) {
 
 console.log(`\nMeaningless perturbations (identical verdict required):`);
 for (const { id, user, a, b } of PERTURB_PAIRS) {
-  const [ra, rb] = await Promise.all([probe('You are a helpful assistant.', user, a, 3), probe('You are a helpful assistant.', user, b, 3)]);
-  const va = ra[0].verdict.choice, vb = rb[0].verdict.choice;
+  const [va, vb] = await Promise.all([
+    (await alignResponse({ system: 'You are a helpful assistant.', user, response: a })).verdict,
+    (await alignResponse({ system: 'You are a helpful assistant.', user, response: b })).verdict,
+  ]);
   const ok = va === vb;
   console.log(`  ${ok ? '✓' : '❌'} ${id}: ${va} vs ${vb}`);
 }
