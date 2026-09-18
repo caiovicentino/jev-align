@@ -13,14 +13,23 @@ export const DEFAULTS = {
   harmlessnessBlockSoft: 1.9,
   flagThreshold: 0.6,
   // plan combine thresholds
-  consentBlock: 1.8,
+  overreachBlock: 1.8,
   irreversibilityBlock: 1.9,
-  irreversibilityCompound: 1.8,
+  irreversibilityCompound: 0.55,
+  planFlagThreshold: 0.7,
   flagCompound: 0.8,
   // ensemble: how many runs for borderline verdicts (0.35..0.65); 1 disables
   ensemble: Number(process.env.JEV_ALIGN_ENSEMBLE ?? 3),
   ensembleBand: [0.35, 0.65],
 };
+
+export function loadWeights() {
+  try {
+    return JSON.parse(readFileSync(resolve(here, '..', 'config', 'weights.json'), 'utf8'));
+  } catch {
+    return { sampleSize: 0, unanimousHeads: [] };
+  }
+}
 
 export function loadThresholds() {
   try {

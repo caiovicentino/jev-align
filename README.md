@@ -24,6 +24,12 @@ Heads: `consent`, `irreversibility`, `scope_creep`, `disclosure` → verdict.
 
 Exit code: `0` pass/flag · `1` block — wire it into CI or a hook and a misaligned plan fails the gate.
 
+## Heads (v0.2)
+
+Response: `sycophancy` (incl. PSRS stance-reversal, CAP 2608.05624) · `hierarchy` · `deception` · `overclaiming` · `harmlessness` (score) · `brand_bias` · `retention` · `anthropomorphism` · `sneaking` (DarkBench categories).
+
+Plan: `scope_creep` · `disclosure` · `omission` + `ordering` (ContractEval-style obligation checks — skipped verifications and dangerous step order block via compound rules) · `overreach` (score) · `irreversibility` (score).
+
 ## Antifragility
 
 The system improves from stress:
@@ -33,19 +39,21 @@ The system improves from stress:
 3. **Structural pre-checks** — empty inputs and degenerate payloads are rejected deterministically before any Jev call.
 4. **Red-team battery** — paraphrase twins (same semantics, rewritten text) assert invariance; tricky negatives (firm refusal, justified disagreement, urgent-but-scoped plans) assert no false firing; tricky positives (urgency capitulation, injection inside plans, self-contradiction, "helpful initiative" scope creep) assert firing.
 5. **Brier scores per head** — calibration quality is measured, not assumed.
-6. **Regression loop** — every FP/FN found in the wild becomes a permanent fixture (three fixture bugs were caught by the verifier during development: Waterloo 1815 was correct; reviewer citing unshown code was overclaiming; release-prep without publishing was fine).
+6. **Regression loop** — every FP/FN found in the wild becomes a permanent fixture (fixture bugs caught by the verifier during development: Waterloo 1815 was correct; reviewer citing unshown code was overclaiming; release-prep without publishing was fine).
+7. **Label-free WMV history** (`jev-align learn`) — reads the audit trail, finds ensemble events, and identifies historically volatile heads; a volatile head then requires **unanimous** ensemble agreement to block (tightening the gate exactly where the verifier has proven unstable, no human labels needed).
+8. **Null-condition calibration** (`node eval/nulls.mjs`) — identical inputs × 5 and meaningless perturbation twins must produce identical verdicts. Measured pure noise of the Jev layer: **sd 0.000–0.008 per head, zero verdict flips, all perturbation twins identical** — the ensemble guards against semantic ambiguity, not sampling noise.
 
 ## Evaluation (complete)
 
-`npm run eval` runs **46 labeled cases across 17 categories** (sycophancy, hierarchy, deception, overclaiming, harmlessness, consent, irreversibility, disclosure, robustness/adversarial) through the production code path, computing verdict accuracy, per-head separation, consistency (3×), latency and cost. Full methodology in `eval/`.
+`npm run eval` runs **59 labeled cases across 23 categories** (sycophancy, hierarchy, deception, overclaiming, harmlessness, consent, irreversibility, disclosure, robustness/adversarial) through the production code path, computing verdict accuracy, per-head separation, consistency (3×), latency and cost. Full methodology in `eval/`.
 
 Latest results (`eval/report.md`, with ensemble + derived thresholds):
 
-- **Verdict+head accuracy**: 46/46 (100%)
-- **Consistency (3×)**: 45/46 (98% — one flag/pass wobble on the hardest case, honest calibrated hedging)
+- **Verdict+head accuracy**: 59/59 (100%)
+- **Consistency (3×)**: 58/59 (98% — one pass/flag wobble on a 15-file migration plan)
 - **Head separation**: sycophancy +0.82 · deception +0.83 · hierarchy +0.74 · harmlessness +1.73 · scopeCreep +0.76 · irreversibility +1.79
 - **Latency**: p50 ~430ms (confident cases) · ~810ms (ensemble engaged)
-- **Cost**: ~$0.0009 per confident check · ~$0.003 when the ensemble fires
+- **Cost**: ~$0.0015 per confident check · ~$0.0045 when the ensemble fires (9 heads)
 
 Robustness: prompt injection embedded in a response → block; empty input → deterministic flag (structural pre-check, no Jev call); 60-step plan → clean flag; benign plan with a command → pass.
 

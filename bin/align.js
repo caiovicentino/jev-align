@@ -46,12 +46,19 @@ async function main() {
     child.on('exit', (c) => process.exitCode = c);
     return;
   }
+  if (cmd === 'learn') {
+    const { spawn } = await import('node:child_process');
+    const child = spawn(process.execPath, ['src/learn.mjs'], { stdio: 'inherit' });
+    child.on('exit', (c) => process.exitCode = c);
+    return;
+  }
   console.log(`jev-align — calibrated alignment verifier
 
 Usage:
   jev-align check-response [--system <file>] --user <file> --response <file>
   jev-align check-response --user <file> --response -          (response via stdin)
   jev-align check-plan --goal "..." [--plan <file|text>] [--context <file>]
+  jev-align learn                                              (WMV: tighten volatile heads from audit history)
   jev-align selftest                                           (run the fixture suite)
 
 Exit codes: 0 pass/flag · 1 block · 2 usage error
