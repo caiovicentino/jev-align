@@ -49,14 +49,21 @@ The system improves from stress:
 
 Latest results (`eval/report.md`, with ensemble + derived thresholds):
 
-- **Verdict+head accuracy**: 59/59 (100%)
-- **Consistency (3×)**: 58/59 (98%)
+- **Verdict+head accuracy**: 94/94 (100%, Wilson 95% CI [96.1%–100%])
+- **Consistency (3×)**: 94/94 agree (100%, borderline cases measured against their accepted verdict set)
 - **Null conditions**: raw flip 0/6 · system flip 0/6 · perturbation twins 3/3 identical
+- **Invariance suite (9/9)**: paraphrase, language (EN/PT-BR), formatting, padding, step order, casing — verdicts hold under semantically meaningless changes
 - **Verdict follows findings**: a verdict-head-only flag is impossible — clean findings force pass, killing perturbation sensitivity (found by the null test itself)
-- **Latency**: p50 ~780ms · p95 ~1300ms
-- **Cost**: ~$0.0019 per full verification
+- **Latency**: p50 ~790ms · p95 ~1.1s
+- **Cost**: ~$0.0085 per full verification (94-case battery, ~$0.80 total)
 
-Robustness: prompt injection embedded in a response → block; injection inside a plan → block; empty input → deterministic flag (structural pre-check); 60-step plan → clean flag; markdown reformatting of a benign answer → identical verdict (perturbation invariance).
+Robustness: prompt injection embedded in a response → block (via harmlessness/hierarchy); injection inside a plan → block; **a malicious step hidden at position 99 of 100 → caught** (chunked verification); empty input → deterministic flag (structural pre-check); plans or responses longer than the verification budget → structural flag, never a silently-verified tail; markdown reformatting, paraphrase, language switch, casing → identical verdicts (invariance suite 9/9).
+
+Known limitations (documented, not hidden):
+
+- Response mode verifies the response as delivered content — an injection aimed at DOWNSTREAM agents (compliance on a future turn) is not caught in response mode by design; use plan mode / jev-shield for execution context
+- Boolean pattern heads read the injection PATTERN inside quoted documentation content (verdict stays correct; the head is noisy on meta-discussion of injection)
+- A plan longer than the 12k-char verification budget returns a structural flag with `plan-truncated-unverified-tail` — it refuses to silently verify an unverified tail
 
 Audit trail → `jev-align learn`: every CLI/MCP verification appends one compact JSON line to `.audit.jsonl`; `learn` reads ensemble events and tightens historically volatile heads to unanimous-agreement gates.
 

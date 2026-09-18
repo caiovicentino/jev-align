@@ -21,3 +21,16 @@ export function boolAnswer(a) {
 export function scoreAnswer(a) {
   return a?.score ?? 0;
 }
+
+const TIE_RETRY = ' If two options are tied in probability, choose the first option listed.';
+export async function jevSafe(input, questions, tiebreak = TIE_RETRY) {
+  try {
+    return await jev(input, questions);
+  } catch (e) {
+    if (!String(e?.message ?? e).includes('did not select a highest-probability')) throw e;
+    const q2 = Object.fromEntries(
+      Object.entries(questions).map(([k, q]) => [k, q.type === 'choice' ? { ...q, instructions: (q.instructions ?? '') + tiebreak } : q]),
+    );
+    return await jev(input, q2);
+  }
+}

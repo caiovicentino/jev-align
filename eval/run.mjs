@@ -79,7 +79,8 @@ for (const c of CASES) {
     const r = await run(c);
     runs.push(r.verdict);
   }
-  const agree = runs.every((v) => v === runs[0]);
+  const accepted = Array.isArray(c.expect.verdict) ? c.expect.verdict : [c.expect.verdict ?? 'flag'];
+  const agree = runs.every((v) => accepted.includes(v));
   consistency.push({ id: c.id, runs, agree });
 }
 
@@ -89,7 +90,21 @@ const okCount = results.filter((x) => x.r.errors.length === 0).length;
 const lat = results.map((x) => x.r.ms).sort((a, b) => a - b);
 const tokens = results.reduce((s, x) => s + (x.r.tokens ?? 0), 0);
 const consistentCount = consistency.filter((c) => c.agree).length;
-
+const VERDICTS = ['pass', 'flag', 'block'];
+// confusion matrix: rows = expected, cols = got
+const confusion = {};
+for (const v of VERDICTS) confusion[v] = { pass: 0, flag: 0, block: 0 };
+for (const { case: c, r: res } of results) {
+  const expected = Array.isArray(c.expect.verdict) ? c.expect.verdict[0] : (c.expect.verdict ?? 'flag');
+  confusion[expected][res.verdict]++;
+}
+function wilson(k, n, z = 1.96) {
+  if (!n) return null;
+  const ph = k / n, d = 1 + z * z / n, c = ph + z * z / (2 * n), s = z * Math.sqrt((ph * (1 - ph) + z * z / (4 * n)) / n);
+  return [(c - s) / d, (c + s) / d];
+}
+const [lo, hi] = wilson(okCount, total) ?? [0, 0];
+const ensFired = results.filter((x) => x.r.ensembled).length;
 let md = `# jev-align — complete evaluation\n\nGenerated ${new Date().toISOString()}\n\n`;
 md += `## Summary\n\n- **Cases**: ${total} (${Object.keys(byCat).length} categories)\n- **Verdict+head accuracy**: ${okCount}/${total} (${(100 * okCount / total).toFixed(0)}%)\n- **Consistency (3×)**: ${consistentCount}/${total} agree (${(100 * consistentCount / total).toFixed(0)}%)\n- **Latency**: p50 ${lat[Math.floor(lat.length / 2)]}ms · p95 ${lat[Math.floor(lat.length * 0.95)]}ms\n- **Cost**: ~${(tokens * 4.2e-8 * total).toFixed(4)} USD total (${tokens} input tokens)\n\n`;
 md += `## Per category\n\n| category | n | accuracy | verdicts |\n|---|---|---|---|\n`;
@@ -102,7 +117,12 @@ for (const [h, s] of Object.entries(sep)) {
   const d = s.posMean != null && s.negMean != null ? (s.posMean - s.negMean) : null;
   md += `| ${h} | ${s.posMean?.toFixed(2) ?? '—'} (${s.nPos}) | ${s.negMean?.toFixed(2) ?? '—'} (${s.nNeg}) | ${d?.toFixed(2) ?? '—'} | ${brierScore[h]?.toFixed(3) ?? '—'} |\n`;
 }
-md += `\n## Failures\n\n`;
+md += `\n## Confusion matrix (expected × got)\n\n| expected \\ got | pass | flag | block |\n|---|---|---|---|\n`;
+for (const e of VERDICTS) md += `| **${e}** | ${confusion[e].pass} | ${confusion[e].flag} | ${confusion[e].block} |\n`;
+md += `\n**Accuracy 95% CI (Wilson)**: ${(100 * okCount / total).toFixed(1)}% ± ${(((hi - lo) / 2) * 100).toFixed(1)}pp [${(lo * 100).toFixed(1)}%–${(hi * 100).toFixed(1)}%]\n`;
+md += `**Ensemble fired**: ${ensFired}/${total} cases (${(100 * ensFired / total).toFixed(0)}% — 3 Jev calls each)\n\n`;
+
+md += `## Failures\n\n`;
 const failures = results.filter((x) => x.r.errors.length > 0);
 if (failures.length === 0) md += `None. All verdicts and head bounds matched expectations.\n`;
 else for (const f of failures) md += `- **${f.case.id}** (${f.case.category}): ${f.r.errors.join('; ')} — got verdict ${f.r.verdict}, p=${JSON.stringify(f.r.p)}\n`;
@@ -112,5 +132,5 @@ if (dis.length === 0) md += `None — every case returned the same verdict acros
 else for (const d of dis) md += `- **${d.id}**: ${d.runs.join(' vs ')}\n`;
 
 writeFileSync('eval/report.md', md);
-writeFileSync('eval/report.json', JSON.stringify({ total, okCount, consistentCount, sep, brier: brierScore, byCat, latency: { p50: lat[Math.floor(lat.length / 2)], p95: lat[Math.floor(lat.length * 0.95)] }, results: results.map(({ case: c, r }) => ({ id: c.id, category: c.category, verdict: r.verdict, p: r.p, ms: r.ms, errors: r.errors })), consistency }, null, 2));
+writeFileSync('eval/report.json', JSON.stringify({ total, okCount, confidence: [lo, hi], ensembleFired: ensFired, confusion, sep, brier: brierScore, byCat, latency: { p50: lat[Math.floor(lat.length / 2)], p95: lat[Math.floor(lat.length * 0.95)] }, results: results.map(({ case: c, r }) => ({ id: c.id, category: c.category, verdict: r.verdict, p: r.p, ms: r.ms, errors: r.errors })), consistency }, null, 2));
 console.log(md);
