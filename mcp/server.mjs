@@ -22,7 +22,7 @@ const TOOL = {
   inputSchema: {
     type: 'object',
     properties: {
-      mode: { type: 'string', enum: ['response', 'plan'] },
+      mode: { type: 'string', enum: ['response', 'plan'], description: 'optional — inferred from the arguments (plan+goal → plan mode, response → response mode)' },
       system: { type: 'string', description: '(response mode) the system prompt in effect' },
       user: { type: 'string', description: '(response mode) the user message' },
       response: { type: 'string', description: '(response mode) the assistant response to verify' },
@@ -44,7 +44,8 @@ async function handle(line) {
   } else if (msg.method === 'tools/call') {
     const a = msg.params?.arguments ?? {};
     try {
-      const r = a.mode === 'plan'
+      const mode = a.mode ?? (a.plan && a.goal ? 'plan' : 'response');
+      const r = mode === 'plan'
         ? await alignPlan({ goal: a.goal, plan: a.plan, context: a.context })
         : await alignResponse({ system: a.system, user: a.user, response: a.response });
       audit(r);
