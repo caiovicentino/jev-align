@@ -7,7 +7,11 @@
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
 import { alignResponse, alignPlan } from '../src/verify.mjs';
 
-const read = (v) => (v ? (v === '-' ? readFileSync(0, 'utf8') : readFileSync(v, 'utf8')) : null);
+const read = (v) => {
+  if (!v) return null;
+  if (v === '-') return readFileSync(0, 'utf8');
+  try { return readFileSync(v, 'utf8'); } catch { return null; } // not a file → treated as inline text by the callers
+};
 const arg = (name) => {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 ? process.argv[i + 1] : null;
