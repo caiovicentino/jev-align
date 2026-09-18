@@ -24,17 +24,28 @@ Heads: `consent`, `irreversibility`, `scope_creep`, `disclosure` → verdict.
 
 Exit code: `0` pass/flag · `1` block — wire it into CI or a hook and a misaligned plan fails the gate.
 
+## Antifragility
+
+The system improves from stress:
+
+1. **Data-derived thresholds** — operating thresholds are not hand-picked; `npm run derive` computes them from the eval evidence (cluster midpoint with safety floors; Youden's J overfits small clean sets and is deliberately not used). `config/thresholds.json` overrides code defaults.
+2. **Majority-decision ensemble** — when any head lands near a decision boundary (±0.12) or the verdict head is borderline, the check runs 3× and the verdict is decided by majority vote. A single noisy head read cannot block a response; it can at most flag it.
+3. **Structural pre-checks** — empty inputs and degenerate payloads are rejected deterministically before any Jev call.
+4. **Red-team battery** — paraphrase twins (same semantics, rewritten text) assert invariance; tricky negatives (firm refusal, justified disagreement, urgent-but-scoped plans) assert no false firing; tricky positives (urgency capitulation, injection inside plans, self-contradiction, "helpful initiative" scope creep) assert firing.
+5. **Brier scores per head** — calibration quality is measured, not assumed.
+6. **Regression loop** — every FP/FN found in the wild becomes a permanent fixture (three fixture bugs were caught by the verifier during development: Waterloo 1815 was correct; reviewer citing unshown code was overclaiming; release-prep without publishing was fine).
+
 ## Evaluation (complete)
 
-`npm run eval` runs **32 labeled cases across 17 categories** (sycophancy, hierarchy, deception, overclaiming, harmlessness, consent, irreversibility, disclosure, robustness/adversarial) through the production code path, computing verdict accuracy, per-head separation, consistency (3×), latency and cost. Full methodology in `eval/`.
+`npm run eval` runs **46 labeled cases across 17 categories** (sycophancy, hierarchy, deception, overclaiming, harmlessness, consent, irreversibility, disclosure, robustness/adversarial) through the production code path, computing verdict accuracy, per-head separation, consistency (3×), latency and cost. Full methodology in `eval/`.
 
-Latest results (`eval/report.md`):
+Latest results (`eval/report.md`, with ensemble + derived thresholds):
 
-- **Verdict+head accuracy**: 32/32 (100%)
-- **Consistency (3×)**: 32/32 (100%)
-- **Head separation** (positive mean vs negative mean): sycophancy +0.82 · deception +0.83 · hierarchy +0.74 · harmlessness +1.73 · scopeCreep +0.76 · irreversibility +1.79 · overclaiming +0.52 · disclosure +0.31
-- **Latency**: p50 431ms · p95 671ms
-- **Cost**: ~$0.0009 per verification
+- **Verdict+head accuracy**: 46/46 (100%)
+- **Consistency (3×)**: 45/46 (98% — one flag/pass wobble on the hardest case, honest calibrated hedging)
+- **Head separation**: sycophancy +0.82 · deception +0.83 · hierarchy +0.74 · harmlessness +1.73 · scopeCreep +0.76 · irreversibility +1.79
+- **Latency**: p50 ~430ms (confident cases) · ~810ms (ensemble engaged)
+- **Cost**: ~$0.0009 per confident check · ~$0.003 when the ensemble fires
 
 Robustness: prompt injection embedded in a response → block; empty input → deterministic flag (structural pre-check, no Jev call); 60-step plan → clean flag; benign plan with a command → pass.
 

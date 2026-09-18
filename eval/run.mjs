@@ -49,11 +49,22 @@ for (const { case: c, r } of results) {
   byCat[c.category].verdicts.push(r.verdict);
 }
 
-// head separation: positives (headMin) vs negatives (headMax) per head
+// head separation + Brier score: positives (headMin) vs negatives (headMax) per head
 const sep = {};
+const brier = {};
 for (const { case: c, r } of results) {
-  for (const h of Object.keys(c.expect.headMin ?? {})) (sep[h] ??= { pos: [], neg: [] }).pos.push({ id: c.id, p: r.p[h] ?? 0 });
-  for (const h of Object.keys(c.expect.headMax ?? {})) (sep[h] ??= { pos: [], neg: [] }).neg.push({ id: c.id, p: r.p[h] ?? 1 });
+  for (const h of Object.keys(c.expect.headMin ?? {})) {
+    (sep[h] ??= { pos: [], neg: [] }).pos.push({ id: c.id, p: r.p[h] ?? 0 });
+    (brier[h] ??= []).push({ y: 1, p: r.p[h] ?? 0 });
+  }
+  for (const h of Object.keys(c.expect.headMax ?? {})) {
+    (sep[h] ??= { pos: [], neg: [] }).neg.push({ id: c.id, p: r.p[h] ?? 1 });
+    (brier[h] ??= []).push({ y: 0, p: r.p[h] ?? 1 });
+  }
+}
+const brierScore = {};
+for (const [h, arr] of Object.entries(brier)) {
+  brierScore[h] = arr.reduce((s, e) => s + (e.p - e.y) ** 2, 0) / arr.length;
 }
 for (const [h, s] of Object.entries(sep)) {
   const mean = (a) => (a.length ? a.reduce((x, y) => x + y.p, 0) / a.length : null);
@@ -85,10 +96,11 @@ md += `## Per category\n\n| category | n | accuracy | verdicts |\n|---|---|---|-
 for (const [k, v] of Object.entries(byCat)) {
   md += `| ${k} | ${v.n} | ${v.ok}/${v.n} | ${v.verdicts.join(' ')} |\n`;
 }
-md += `\n## Head separation (positives vs negatives)\n\n| head | pos mean (n) | neg mean (n) | separation |\n|---|---|---|---|\n`;
+md += `\n## Head separation (positives vs negatives)\n\n| head | pos mean (n) | neg mean (n) | separation | Brier |
+|---|---|---|---|---|\n`;
 for (const [h, s] of Object.entries(sep)) {
   const d = s.posMean != null && s.negMean != null ? (s.posMean - s.negMean) : null;
-  md += `| ${h} | ${s.posMean?.toFixed(2) ?? '—'} (${s.nPos}) | ${s.negMean?.toFixed(2) ?? '—'} (${s.nNeg}) | ${d?.toFixed(2) ?? '—'} |\n`;
+  md += `| ${h} | ${s.posMean?.toFixed(2) ?? '—'} (${s.nPos}) | ${s.negMean?.toFixed(2) ?? '—'} (${s.nNeg}) | ${d?.toFixed(2) ?? '—'} | ${brierScore[h]?.toFixed(3) ?? '—'} |\n`;
 }
 md += `\n## Failures\n\n`;
 const failures = results.filter((x) => x.r.errors.length > 0);
@@ -100,5 +112,5 @@ if (dis.length === 0) md += `None — every case returned the same verdict acros
 else for (const d of dis) md += `- **${d.id}**: ${d.runs.join(' vs ')}\n`;
 
 writeFileSync('eval/report.md', md);
-writeFileSync('eval/report.json', JSON.stringify({ total, okCount, consistentCount, sep, byCat, latency: { p50: lat[Math.floor(lat.length / 2)], p95: lat[Math.floor(lat.length * 0.95)] }, results: results.map(({ case: c, r }) => ({ id: c.id, category: c.category, verdict: r.verdict, p: r.p, ms: r.ms, errors: r.errors })), consistency }, null, 2));
+writeFileSync('eval/report.json', JSON.stringify({ total, okCount, consistentCount, sep, brier: brierScore, byCat, latency: { p50: lat[Math.floor(lat.length / 2)], p95: lat[Math.floor(lat.length * 0.95)] }, results: results.map(({ case: c, r }) => ({ id: c.id, category: c.category, verdict: r.verdict, p: r.p, ms: r.ms, errors: r.errors })), consistency }, null, 2));
 console.log(md);
