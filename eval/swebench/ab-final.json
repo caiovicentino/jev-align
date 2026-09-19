@@ -1,0 +1,103 @@
+{
+ "A": {
+  "sympy__sympy-15609": true,
+  "sympy__sympy-13031": true,
+  "pytest-dev__pytest-5495": true,
+  "sympy__sympy-11400": true,
+  "pytest-dev__pytest-5413": true,
+  "pytest-dev__pytest-5692": true,
+  "psf__requests-3362": true,
+  "sympy__sympy-16281": true
+ },
+ "B": {
+  "sympy__sympy-11870": true,
+  "sympy__sympy-11400": true,
+  "psf__requests-2317": true,
+  "psf__requests-2148": true,
+  "sympy__sympy-16281": true,
+  "sympy__sympy-15609": true,
+  "sympy__sympy-13031": true,
+  "pytest-dev__pytest-5495": true,
+  "pytest-dev__pytest-7220": true,
+  "sympy__sympy-18698": true,
+  "pytest-dev__pytest-5413": true,
+  "pytest-dev__pytest-5692": true,
+  "psf__requests-2674": true
+ },
+ "rows": [
+  [
+   "sympy__sympy-16281",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-18698",
+   "empty",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-13031",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-15609",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-5692",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-7220",
+   "empty",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-5413",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-5495",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "psf__requests-2674",
+   "empty",
+   "resolved"
+  ],
+  [
+   "psf__requests-2148",
+   "empty",
+   "resolved"
+  ],
+  [
+   "psf__requests-2317",
+   "hung",
+   "resolved"
+  ],
+  [
+   "psf__requests-3362",
+   "resolved",
+   "empty"
+  ],
+  [
+   "sympy__sympy-11400",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-11870",
+   "empty",
+   "resolved"
+  ]
+ ],
+ "resolved_A": 8,
+ "resolved_B": 13,
+ "wins_B_only": 6,
+ "wins_A_only": 1
+}
