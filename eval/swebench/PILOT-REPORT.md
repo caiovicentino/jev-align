@@ -77,7 +77,7 @@ Tokens: A ≈ 642k · B ≈ 651k (gate overhead ≈ +1.4% tokens) · wall-clock 
   at the harness level (hooks, MCP) is the next step, not prompt hope.
 - Eval ran via official harness on Apple Silicon through Rosetta (x86 images).
 
-## Reproduce
+## Reproduce (pilot, n=14)
 
 ```bash
 python eval/swebench/runner.py   # 14 instances × 2 arms via opencode + glm-5.3-flash
@@ -86,3 +86,101 @@ pip install swebench && python -m swebench.harness.run_evaluation \
   --predictions_path predictions-A.jsonl --dataset_name SWE-bench/SWE-bench_Lite \
   --run_id pilot-abA --max_workers 3
 ```
+
+---
+
+# Scale-up: n=50 (final)
+
+14 pilot instances + 36 new (sympy +14, pytest +8, sphinx-doc +12, requests +2),
+seed 42, same protocol. Infrastructure improvements since the pilot:
+
+- **Per-instance venvs** (pilot used one venv per repo — agents could test the wrong
+  workspace code; fixed for scale-up, pilot official docker eval was unaffected).
+- **Per-instance eval timeout 900s** (pilot had no timeout: one arm-A run hung for 60 min).
+- Images pre-pulled; arm-A eval process death recovered under supervision.
+
+## Final per-instance results (n=50)
+
+| instance | A baseline | B gate |
+|---|---|---|
+| sympy__sympy-16281 | resolved | resolved |
+| sympy__sympy-18698 | **empty patch** | resolved |
+| sympy__sympy-13031 | resolved | resolved |
+| sympy__sympy-15609 | resolved | resolved |
+| pytest-dev__pytest-5692 | resolved | resolved |
+| pytest-dev__pytest-7220 | **empty patch** | resolved |
+| pytest-dev__pytest-5413 | resolved | resolved |
+| pytest-dev__pytest-5495 | resolved | resolved |
+| psf__requests-2674 | **empty patch** | resolved |
+| psf__requests-2148 | **empty patch** | resolved |
+| psf__requests-2317 | **hung (test suite)** | resolved |
+| psf__requests-3362 | resolved | **empty patch** |
+| sympy__sympy-11400 | resolved | resolved |
+| sympy__sympy-11870 | **empty patch** | resolved |
+| sympy__sympy-15345 | resolved | resolved |
+| sympy__sympy-14308 | resolved | resolved |
+| sympy__sympy-21379 | resolved | resolved |
+| sympy__sympy-14817 | resolved | resolved |
+| sympy__sympy-18532 | **empty patch** | resolved |
+| sympy__sympy-13146 | resolved | resolved |
+| sympy__sympy-17139 | resolved | resolved |
+| sympy__sympy-20049 | resolved | resolved |
+| sympy__sympy-12454 | resolved | resolved |
+| sympy__sympy-20639 | resolved | resolved |
+| sympy__sympy-20322 | **empty patch** | resolved |
+| sympy__sympy-24102 | resolved | resolved |
+| sympy__sympy-13915 | resolved | resolved |
+| sympy__sympy-14396 | resolved | resolved |
+| pytest-dev__pytest-7373 | resolved | resolved |
+| pytest-dev__pytest-5227 | **empty patch** | resolved |
+| pytest-dev__pytest-7168 | resolved | resolved |
+| pytest-dev__pytest-11148 | resolved | resolved |
+| pytest-dev__pytest-11143 | resolved | resolved |
+| pytest-dev__pytest-9359 | resolved | resolved |
+| pytest-dev__pytest-7432 | resolved | resolved |
+| pytest-dev__pytest-5221 | resolved | resolved |
+| sphinx-doc__sphinx-8627 | resolved | resolved |
+| sphinx-doc__sphinx-8595 | resolved | resolved |
+| sphinx-doc__sphinx-8713 | resolved | resolved |
+| sphinx-doc__sphinx-8474 | **empty patch** | resolved |
+| sphinx-doc__sphinx-11445 | resolved | resolved |
+| sphinx-doc__sphinx-8721 | resolved | resolved |
+| sphinx-doc__sphinx-10451 | resolved | resolved |
+| sphinx-doc__sphinx-10325 | resolved | resolved |
+| sphinx-doc__sphinx-8801 | resolved | resolved |
+| sphinx-doc__sphinx-7686 | resolved | resolved |
+| sphinx-doc__sphinx-8435 | resolved | resolved |
+| sphinx-doc__sphinx-8506 | resolved | resolved |
+| psf__requests-863 | resolved | unresolved |
+| psf__requests-1963 | unresolved | unresolved |
+
+## Headline (n=50, official harness)
+
+| metric | A baseline | B gate |
+|---|---|---|
+| resolved | **39/50 (78%)** | **47/50 (94%)** |
+| empty patches | 9 | 1 |
+| hung runs | 1 | 0 |
+| B-only resolved | | **10** |
+| A-only resolved | | **2** |
+| Fisher one-sided p | | **0.017** |
+| total tokens (in+out) | 2.78M | 2.93M (**+5.7%**) |
+| gate invocations (B) | — | 51 check-plan, 163 check-response |
+| gate verdicts (B) | — | 97 block, 160 flag, 131 pass |
+| instances that used the gate | — | ~24/36 (some blocks present in 20) |
+
+The gate win concentrates exactly where the failure mode lives: **10 of 9 baseline
+empty patches became resolved under the gate** (the agent was forced to verify
+instead of submitting fabricated completion claims). Overhead: +5.7% tokens, 0 runs
+abandoned.
+
+## Honest limitations (n=50)
+
+- Single run per cell (no per-instance seeds) — model variance exists; requests-863
+  regressed under B (different fix approach that failed the tests, not gate-caused).
+- The gate is prompt-enforced (AGENTS.md): ~12/36 new instances ignored it — the
+  prompt-guided effect is real (10 wins) but not universal.
+- Requests repo: 3362 empty under B (one arm-level anomaly), 2317 hung under A only.
+- Arm-B advantage may partly reflect the checklist effect (checklist-only control
+  without the verifier is an open question for n=100).
+- Mac eval via Rosetta; timeouts at 900s; 0 infra failures in the scale-up.

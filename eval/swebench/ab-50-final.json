@@ -1,0 +1,352 @@
+{
+ "rows": [
+  [
+   "sympy__sympy-16281",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-18698",
+   "empty",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-13031",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-15609",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-5692",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-7220",
+   "empty",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-5413",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-5495",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "psf__requests-2674",
+   "empty",
+   "resolved"
+  ],
+  [
+   "psf__requests-2148",
+   "empty",
+   "resolved"
+  ],
+  [
+   "psf__requests-2317",
+   "hung",
+   "resolved"
+  ],
+  [
+   "psf__requests-3362",
+   "resolved",
+   "empty"
+  ],
+  [
+   "sympy__sympy-11400",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-11870",
+   "empty",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-15345",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-14308",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-21379",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-14817",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-18532",
+   "empty",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-13146",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-17139",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-20049",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-12454",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-20639",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-20322",
+   "empty",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-24102",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-13915",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sympy__sympy-14396",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-7373",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-5227",
+   "empty",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-7168",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-11148",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-11143",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-9359",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-7432",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "pytest-dev__pytest-5221",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-8627",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-8595",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-8713",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-8474",
+   "empty",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-11445",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-8721",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-10451",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-10325",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-8801",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-7686",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-8435",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "sphinx-doc__sphinx-8506",
+   "resolved",
+   "resolved"
+  ],
+  [
+   "psf__requests-863",
+   "resolved",
+   "unresolved"
+  ],
+  [
+   "psf__requests-1963",
+   "unresolved",
+   "unresolved"
+  ]
+ ],
+ "A": {
+  "sympy__sympy-15609": true,
+  "sympy__sympy-13031": true,
+  "pytest-dev__pytest-5495": true,
+  "sympy__sympy-11400": true,
+  "pytest-dev__pytest-5413": true,
+  "pytest-dev__pytest-5692": true,
+  "psf__requests-3362": true,
+  "sympy__sympy-16281": true,
+  "psf__requests-863": true,
+  "pytest-dev__pytest-11143": true,
+  "pytest-dev__pytest-11148": true,
+  "pytest-dev__pytest-5221": true,
+  "pytest-dev__pytest-7168": true,
+  "pytest-dev__pytest-7373": true,
+  "pytest-dev__pytest-7432": true,
+  "pytest-dev__pytest-9359": true,
+  "sphinx-doc__sphinx-10325": true,
+  "sphinx-doc__sphinx-10451": true,
+  "sphinx-doc__sphinx-11445": true,
+  "sphinx-doc__sphinx-7686": true,
+  "sphinx-doc__sphinx-8435": true,
+  "sphinx-doc__sphinx-8506": true,
+  "sphinx-doc__sphinx-8595": true,
+  "sphinx-doc__sphinx-8627": true,
+  "sphinx-doc__sphinx-8713": true,
+  "sphinx-doc__sphinx-8721": true,
+  "sphinx-doc__sphinx-8801": true,
+  "sympy__sympy-12454": true,
+  "sympy__sympy-13146": true,
+  "sympy__sympy-13915": true,
+  "sympy__sympy-14308": true,
+  "sympy__sympy-14396": true,
+  "sympy__sympy-14817": true,
+  "sympy__sympy-15345": true,
+  "sympy__sympy-17139": true,
+  "sympy__sympy-20049": true,
+  "sympy__sympy-20639": true,
+  "sympy__sympy-21379": true,
+  "sympy__sympy-24102": true,
+  "psf__requests-1963": false
+ },
+ "B": {
+  "sympy__sympy-11870": true,
+  "sympy__sympy-11400": true,
+  "psf__requests-2317": true,
+  "psf__requests-2148": true,
+  "sympy__sympy-16281": true,
+  "sympy__sympy-15609": true,
+  "sympy__sympy-13031": true,
+  "pytest-dev__pytest-5495": true,
+  "pytest-dev__pytest-7220": true,
+  "sympy__sympy-18698": true,
+  "pytest-dev__pytest-5413": true,
+  "pytest-dev__pytest-5692": true,
+  "psf__requests-2674": true,
+  "pytest-dev__pytest-11143": true,
+  "pytest-dev__pytest-11148": true,
+  "pytest-dev__pytest-5221": true,
+  "pytest-dev__pytest-5227": true,
+  "pytest-dev__pytest-7168": true,
+  "pytest-dev__pytest-7373": true,
+  "pytest-dev__pytest-7432": true,
+  "pytest-dev__pytest-9359": true,
+  "sphinx-doc__sphinx-10325": true,
+  "sphinx-doc__sphinx-10451": true,
+  "sphinx-doc__sphinx-11445": true,
+  "sphinx-doc__sphinx-7686": true,
+  "sphinx-doc__sphinx-8435": true,
+  "sphinx-doc__sphinx-8474": true,
+  "sphinx-doc__sphinx-8506": true,
+  "sphinx-doc__sphinx-8595": true,
+  "sphinx-doc__sphinx-8627": true,
+  "sphinx-doc__sphinx-8713": true,
+  "sphinx-doc__sphinx-8721": true,
+  "sphinx-doc__sphinx-8801": true,
+  "sympy__sympy-12454": true,
+  "sympy__sympy-13146": true,
+  "sympy__sympy-13915": true,
+  "sympy__sympy-14308": true,
+  "sympy__sympy-14396": true,
+  "sympy__sympy-14817": true,
+  "sympy__sympy-15345": true,
+  "sympy__sympy-17139": true,
+  "sympy__sympy-18532": true,
+  "sympy__sympy-20049": true,
+  "sympy__sympy-20322": true,
+  "sympy__sympy-20639": true,
+  "sympy__sympy-21379": true,
+  "sympy__sympy-24102": true,
+  "psf__requests-1963": false,
+  "psf__requests-863": false
+ },
+ "resolved_A": 39,
+ "resolved_B": 47,
+ "wins_B_only": 10,
+ "wins_A_only": 2,
+ "n": 50
+}
